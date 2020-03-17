@@ -1,8 +1,7 @@
 import boto3
+import pandas as pd
 from botocore import UNSIGNED
 from botocore.client import Config
-
-import pandas as pd
 
 
 def download_file_from_s3_public_bucket(bucket, object, output_file):
@@ -17,9 +16,9 @@ def download_file_from_s3_public_bucket(bucket, object, output_file):
         :type output_file: str
     """
     botocore_config = Config(signature_version=UNSIGNED)
-    s3_client = boto3.client('s3', config=botocore_config)
+    s3_client = boto3.client("s3", config=botocore_config)
     s3_client.download_file(bucket, object, output_file)
-    
+
 
 def csv_file_to_parquet(input_file, output_file):
     """
@@ -33,8 +32,14 @@ def csv_file_to_parquet(input_file, output_file):
     df = pd.read_csv(input_file)
     df.to_parquet(output_file)
 
+
 def parquet_to_df(input_file):
     df = pd.read_parquet(input_file)
 
+
 def split_dataframe(df):
-    return 1, 2
+    # df_with_date = df.dropna(axis=0)
+    df_without_date = df[df.img.isnull()]
+
+    df_with_date = df[~df.product_id.isin(df_without_date.product_id)]
+    return df_with_date, df_without_date
