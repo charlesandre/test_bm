@@ -6,7 +6,7 @@ from pandas._testing import assert_frame_equal
 
 from transformater.utils import (UNSIGNED, csv_file_to_parquet,
                                  download_file_from_s3_public_bucket,
-                                 parquet_to_df, split_dataframe)
+                                 parquet_to_df, split_dataframe_by_missing_key)
 
 
 class TestUtils(unittest.TestCase):
@@ -38,24 +38,26 @@ class TestUtils(unittest.TestCase):
     def test_split_dataframe(self):
         fake_dataframe = pd.DataFrame(
             [
-                [1, "product_1", "image",],
+                [1, "product_1", "img",],
                 [2, "product_2",],
-                [3, "product_3", "image"],
+                [3, "product_3", "img"],
                 [4, "product_4",],
             ],
-            columns=["product_id", "product_name", "img"],
+            columns=["product_id", "product_name", "image"],
         )
 
         expected_valid_df = pd.DataFrame(
-            [[1, "product_1", "image",], [3, "product_3", "image"]],
-            columns=["product_id", "product_name", "img"],
+            [[1, "product_1", "img",], [3, "product_3", "img"]],
+            columns=["product_id", "product_name", "image"],
         )
         expected_archive_df = pd.DataFrame(
             [[2, "product_2", None], [4, "product_4", None]],
-            columns=["product_id", "product_name", "img"],
+            columns=["product_id", "product_name", "image"],
         )
 
-        valid_df, archive_df = split_dataframe(fake_dataframe)
+        valid_df, archive_df = split_dataframe_by_missing_key(
+            df=fake_dataframe, key="image"
+        )
 
         assert_frame_equal(
             valid_df.reset_index(drop=True), expected_valid_df.reset_index(drop=True)

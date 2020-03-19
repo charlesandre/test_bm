@@ -37,9 +37,7 @@ def parquet_to_df(input_file):
     df = pd.read_parquet(input_file)
 
 
-def split_dataframe(df):
-    # df_with_date = df.dropna(axis=0)
-    df_without_date = df[df.img.isnull()]
-
-    df_with_date = df[~df.product_id.isin(df_without_date.product_id)]
-    return df_with_date, df_without_date
+def split_dataframe_by_missing_key(df, key):
+    df_without_img = df[df[key].isnull()]
+    df_with_img = df[df[key].notnull()]
+    return df_with_img, df_without_img
