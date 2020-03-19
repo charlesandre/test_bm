@@ -35,3 +35,18 @@ First using a distributed data processing framework such as spark, which would a
 
 We could compute the split on the dataframe with only the past x minutes of data and run the pipeline every x minutes.
 
+
+### To run the tests
+
+```bash
+pip install-r requirements.txt
+pytest
+````
+
+### To run the pipeline
+
+```bash
+pip install-r requirements.txt
+export PYTHONPATH=. 
+python transformater/transform.py
+````

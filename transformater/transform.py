@@ -8,11 +8,11 @@ from transformater.utils import (csv_file_to_parquet,
 
 
 def run(s3_bucket, s3_object, local_file_name, splitting_key):
-    logging.debug("Download file from S3 locally..")
+    logging.info("Download file from S3 locally..")
     download_file_from_s3_public_bucket(
         bucket=s3_bucket, object=s3_object, output_file=f"{local_file_name}.csv",
     )
-    logging.debug("Download DONE")
+    logging.info("Download DONE")
 
     logging.info("Convert file to csv .. ")
     csv_file_to_parquet(
